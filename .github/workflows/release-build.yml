@@ -20,9 +20,11 @@ jobs:
           dotnet-version: '9.0.x'
 
       - name: Restore dependencies
+        working-directory: ./WindowsCleanupTool_Full
         run: dotnet restore
 
       - name: Publish project
+        working-directory: ./WindowsCleanupTool_Full
         run: dotnet publish -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true
 
       - name: Upload EXE as artifact
@@ -45,8 +47,4 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v${{ github.run_number }}
-          name: WindowsCleanupTool v${{ github.run_number }}
-          files: ./release/*.exe
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          tag_nam_
