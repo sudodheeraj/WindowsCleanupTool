@@ -19,6 +19,15 @@ jobs:
         with:
           dotnet-version: '9.0.x'
 
+      - name: Extract version from AssemblyInfo.cs
+        id: get_version
+        shell: pwsh
+        run: |
+          $content = Get-Content ./WindowsCleanupTool_Full/Properties/AssemblyInfo.cs
+          $versionLine = $content | Select-String -Pattern 'AssemblyVersion'
+          $version = ($versionLine -split '"')[1]
+          echo "version=$version" >> $env:GITHUB_OUTPUT
+
       - name: Restore dependencies
         working-directory: ./WindowsCleanupTool_Full
         run: dotnet restore
@@ -47,4 +56,8 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_nam_
+          tag_name: v${{ needs.build.outputs.version }}
+          name: WindowsCleanupTool v${{ needs.build.outputs.version }}
+          files: ./release/*.exe
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
